@@ -15,8 +15,8 @@ const App = () => {
     }
   }
   return (
-    <div className='bg-gray-900 w-screen h-screen text-white'>
-      <div className='bg-slate-700 m-10 p-5 rounded-lg text-2xl font-bold'>SIC Assembler helper</div>
+    <div className='bg-gray-950 w-screen h-screen text-white p-10'>
+      <div className='bg-slate-700 p-5 rounded-lg text-2xl font-bold'>SIC Assembler</div>
     
     
      {renderPage()}
