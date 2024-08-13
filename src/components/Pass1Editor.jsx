@@ -17,21 +17,31 @@ const Pass1Editor = () => {
     };
 
     return (
-        <div className='flex flex-wrap mt-10'>
-            <div className='w-full lg:w-[50%]'>
+        <div className='flex flex-wrap mt-5'>
+            <div className='w-full lg:w-[50%] bg-[#1e1e1e] p-5 rounded-lg flex-1'>
                 <h1 className='text-2xl font-bold mb-5'>Program:{} </h1>
             <Editor
                 height="60vh"
                 defaultLanguage="cpp"
                 defaultValue={code}
+                options={{
+                    fontSize: 14, 
+                    lineNumbers: "on",
+                    wordWrap: "on",
+                    automaticLayout: true,
+                }}
                 theme='vs-dark'
                 onChange={handleEditorChange}
             />
             </div>
            
-            <div style={{ marginLeft: '20px', whiteSpace: 'pre-wrap' }}>
-                <h3>Output:</h3>
-                <pre>{output}</pre>
+            <div className='flex justify-around flex-col ml-5 gap-5 flex-1'>
+                <div className='bg-[#1e1e1e] flex-1  rounded-lg p-3 overflow-scroll max-h-[100em]'>
+                    <h1>Intermediate File:</h1>
+                </div>
+                <div className='flex-1 bg-[#1e1e1e] rounded-lg p-3 overflow-scroll max-h-[100em]'>
+                    <h1>SYMTAB:</h1>
+                </div>
             </div>
         </div>
     );
