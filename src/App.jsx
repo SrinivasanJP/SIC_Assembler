@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Home from './components/Home';
 import Pass1Editor from './components/Pass1Editor';
 
@@ -16,7 +16,7 @@ const App = () => {
   }
   return (
     <div className='bg-gray-950 w-screen h-screen text-white p-5'>
-      <div className='bg-slate-700 p-5 rounded-lg text-2xl font-bold'>SIC Assembler</div>
+      <div onClick={()=>setPage("home")} className='bg-slate-700 p-5 rounded-lg text-2xl font-bold cursor-pointer'>SIC Assembler</div>
     
     
      {renderPage()}
