@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
+import { common } from '../styles/common';
 
 const Pass1Editor = () => {
-    const [code, setCode] = useState('// Write your code here\n');
+    const [code, setCode] = useState('COPY START 1000\n');
     const [intermediateFile, setIntermediateFile] = useState('');
     const [symtab, setSymtab] = useState('');
     const [programName, setProgramName] = useState('');
@@ -67,7 +68,7 @@ const Pass1Editor = () => {
 
 
     return (
-        <div className=' flex flex-col gap-3 mt-3'>
+        <div className=' flex flex-col max-h-screen h-screen gap-3 p-3'>
             <div className='flex flex-wrap gap-5 flex-1'>
             <div className='w-full lg:w-[50%] bg-[#1e1e1e] p-5 rounded-lg flex-1'>
                 <h1 className='text-2xl font-bold mb-5'>Program: {programName} </h1>
@@ -88,13 +89,13 @@ const Pass1Editor = () => {
             </div>
            
             <div className='flex justify-around flex-col gap-5 flex-1'>
-                <div className='bg-[#1e1e1e] flex-1  rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]'>
+                <div className='bg-transparent backdrop-blur-lg shadow-sm shadow-white  flex-1  rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]'>
                     <h1>Intermediate File:</h1>
                     <pre>
                     {intermediateFile}
                     </pre>
                 </div>
-                <div className='flex-1 bg-[#1e1e1e] rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]'>
+                <div className='flex-1 bg-[radial-gradient(138.06%_1036.51%_at_95.25%_-2.54%,_#7ED4FD11_14.06%,#709DF755_51.02%,#4D78EF55_79.09%)] backdrop-blur-md shadow-sm shadow-white rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]'>
                     <h1>SYMTAB:</h1>
                     <pre>
                     {symtab}
@@ -102,7 +103,7 @@ const Pass1Editor = () => {
                 </div>
             </div>
         </div>
-        <div onClick={()=>processCode()} className="w-full bg-slate-700 px-5 py-3 rounded-lg flex justify-center">
+        <div onClick={()=>processCode()} className={"w-full rounded-lg flex justify-center mt-5 "+common.Buttonblue}>
         <h1 className='text-xl font-bold '>Click here to get Output</h1>
         </div>
         </div>
