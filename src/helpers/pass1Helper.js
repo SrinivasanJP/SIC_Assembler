@@ -16,6 +16,8 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
             [label, opcode, operand] = tokens;
         } else if (tokens.length === 2) {
             [opcode, operand] = tokens;
+        } else if(tokens.length ===1){
+            [opcode] = tokens;
         }
         if(opcode ==''){
             return;
@@ -26,7 +28,7 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
             programName = label;
             startAddr = parseInt(operand, 16);
             locctr = startAddr;
-            intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t ${label} \t ${opcode} \t ${operand}`);
+            intermediateLines.push(`${locctr.toString(16).toUpperCase().padStart(4,"0")} \t ${label} \t ${opcode} \t ${operand}`);
             return;
         }
 
@@ -42,7 +44,7 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
         console.log(opcode+"---"+locctr);
         
 
-        intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t ${label} \t ${opcode} \t ${operand}`);
+        intermediateLines.push(`${locctr.toString(16).toUpperCase().padStart(4,"0")} \t ${label} \t ${opcode} \t ${operand}`);
         // Handle opcodes and directives
         if (opcode in OPTAB || opcode.includes("+") || opcode.includes("@") || opcode.includes("#")) {
             let format = determineFormat(opcode);  // Assume this function determines instruction format based on OPCODE
