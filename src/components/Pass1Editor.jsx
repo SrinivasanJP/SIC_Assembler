@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { common } from '../styles/common';
-
+import {processPass1} from '../helpers/pass1Helper'
 const Pass1Editor = () => {
     const [code, setCode] = useState('COPY START 1000\n');
     const [intermediateFile, setIntermediateFile] = useState('');
@@ -103,7 +103,7 @@ const Pass1Editor = () => {
                 </div>
             </div>
         </div>
-        <div onClick={()=>processCode()} className={"w-full rounded-lg flex justify-center mt-5 "+common.Buttonblue}>
+        <div onClick={()=>processPass1(code,setProgramName,setSymtab,setIntermediateFile)} className={"w-full rounded-lg flex justify-center mt-5 "+common.Buttonblue}>
         <h1 className='text-xl font-bold '>Click here to get Output</h1>
         </div>
         </div>
