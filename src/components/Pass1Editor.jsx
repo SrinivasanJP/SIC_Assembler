@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { common } from '../styles/common';
 import {processPass1} from '../helpers/pass1Helper'
+import IntermediateTable from './IntermediateTable';
 const Pass1Editor = () => {
     const [code, setCode] = useState('COPY START 1000\n');
     const [intermediateFile, setIntermediateFile] = useState('');
@@ -89,12 +90,8 @@ const Pass1Editor = () => {
             </div>
            
             <div className='flex justify-around flex-col gap-5 flex-1'>
-                <div className='bg-transparent backdrop-blur-lg shadow-sm shadow-white  flex-1  rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]'>
-                    <h1>Intermediate File:</h1>
-                    <pre>
-                    {intermediateFile}
-                    </pre>
-                </div>
+                
+                    <IntermediateTable intermediateFile={intermediateFile}/>
                 <div className='flex-1 bg-[radial-gradient(138.06%_1036.51%_at_95.25%_-2.54%,_#7ED4FD11_14.06%,#709DF755_51.02%,#4D78EF55_79.09%)] backdrop-blur-md shadow-sm shadow-white rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]'>
                     <h1>SYMTAB:</h1>
                     <pre>
