@@ -1,3 +1,5 @@
+import { OPTAB } from "./constants";
+
 export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) => {
     let lines = code.split('\n');
     let locctr = 0;
