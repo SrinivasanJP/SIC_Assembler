@@ -17,6 +17,9 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
         } else if (tokens.length === 2) {
             [opcode, operand] = tokens;
         }
+        if(opcode ==''){
+            return;
+        }
 
         // Handle the START directive
         if (opcode === "START") {
@@ -36,8 +39,12 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
             }
         }
 
+        console.log(opcode+"---"+locctr);
+        
+
+        intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t ${label} \t ${opcode} \t ${operand}`);
         // Handle opcodes and directives
-        if (opcode in OPTAB) {
+        if (opcode in OPTAB || opcode.includes("+") || opcode.includes("@") || opcode.includes("#")) {
             let format = determineFormat(opcode);  // Assume this function determines instruction format based on OPCODE
             locctr += format;
         } else if (opcode === "WORD") {
@@ -50,13 +57,12 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
         } else if (opcode === "RESB") {
             locctr += parseInt(operand);
         } else if (opcode === "END") {
-            intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t\t ${opcode} \t ${operand}`);
             return;
         } else {
             console.error(`Error: Invalid opcode ${opcode} at line ${index + 1}`);
         }
 
-        intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t ${label} \t ${opcode} \t ${operand}`);
+        
     });
 
     let programLength = locctr - startAddr;
@@ -70,8 +76,7 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
 
 // Example helper functions
 const determineFormat = (opcode) => {
-    // Logic to determine the format based on opcode for SIC/XE
-    // Return 1, 2, 3, or 4 based on the instruction format
+    if(opcode[0]=="+") return 4;
     return 3;  // Assume format 3 for demonstration
 };
 
