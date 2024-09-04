@@ -1,6 +1,6 @@
 import { OPTAB } from "./constants";
 
-export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) => {
+export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,setError) => {
     let lines = code.split('\n');
     let locctr = 0;
     let intermediateLines = [];
@@ -61,7 +61,7 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile) 
         } else if (opcode === "END") {
             return;
         } else {
-            console.error(`Error: Invalid opcode ${opcode} at line ${index + 1}`);
+            setError({state:true,message:`Error: Invalid opcode ${opcode} at line ${index + 1}`});
         }
 
         

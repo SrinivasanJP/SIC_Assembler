@@ -9,6 +9,7 @@ const Pass1Editor = () => {
     const [symtab, setSymtab] = useState('');
     const [programName, setProgramName] = useState('');
     const [locctr, setLocctr] = useState(0);
+    const [error, setError] = useState({state:false, message:""});
 
     const handleEditorChange = (value) => {
         setCode(value);
@@ -91,7 +92,7 @@ const Pass1Editor = () => {
            
             <div className='flex justify-around flex-col gap-5 flex-1'>
                 
-                    <IntermediateTable intermediateFile={intermediateFile}/>
+                    <IntermediateTable intermediateFile={intermediateFile} error={error}/>
                 <div className='flex-1 bg-[radial-gradient(138.06%_1036.51%_at_95.25%_-2.54%,_#7ED4FD11_14.06%,#709DF755_51.02%,#4D78EF55_79.09%)] backdrop-blur-md shadow-sm shadow-white rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]'>
                     <h1>SYMTAB:</h1>
                     <pre>
@@ -100,7 +101,7 @@ const Pass1Editor = () => {
                 </div>
             </div>
         </div>
-        <div onClick={()=>processPass1(code,setProgramName,setSymtab,setIntermediateFile)} className={"w-full rounded-lg flex justify-center mt-5 "+common.Buttonblue}>
+        <div onClick={()=>processPass1(code,setProgramName,setSymtab,setIntermediateFile,setError)} className={"w-full rounded-lg flex justify-center mt-5 "+common.Buttonblue}>
         <h1 className='text-xl font-bold '>Click here to get Output</h1>
         </div>
         </div>
