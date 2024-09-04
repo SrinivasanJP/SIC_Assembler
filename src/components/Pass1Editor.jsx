@@ -15,59 +15,6 @@ const Pass1Editor = () => {
         setCode(value);
     };
 
-    const processCode = () => {
-        let lines = code.split('\n');
-        let locctr = 0;
-        let intermediateLines = [];
-        let symtabLines = [];
-        let programName = '';
-
-        lines.forEach((line) => {
-            let tokens = line.trim().split(/\s+/);
-
-            if (tokens.length === 3) {
-                let label = tokens[0];
-                let opcode = tokens[1];
-                let operand = tokens[2];
-
-                if (opcode === "START") {
-                    programName = label;
-                    locctr = parseInt(operand, 16);
-                    intermediateLines.push(`\t\t ${label} \t ${opcode} \t ${operand}`);
-                } else {
-                    symtabLines.push(`${locctr.toString(16).toUpperCase()} \t ${label}`);
-                    intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t\t\t\t ${label} \t ${opcode} \t ${operand}`);
-
-                    if (opcode === "WORD") {
-                        locctr += 3;
-                    } else if (opcode === "BYTE") {
-                        locctr += 1;
-                    } else if (opcode === "RESW") {
-                        locctr += parseInt(operand) * 3;
-                    } else if (opcode === "RESB") {
-                        locctr += parseInt(operand);
-                    } else {
-                        locctr += 3;
-                    }
-                }
-            } else if (tokens.length === 2) {
-                let opcode = tokens[0];
-                let operand = tokens[1];
-
-                if (opcode === "END") {
-                    intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t\t\t\t ${opcode} \t ${operand}`);
-                } else {
-                    intermediateLines.push(`${locctr.toString(16).toUpperCase()} \t\t\t\t ${opcode} \t ${operand}`);
-                    locctr += 3;
-                }
-            }
-        });
-
-        setIntermediateFile(intermediateLines.join('\n'));
-        setSymtab(symtabLines.join('\n'));
-        setProgramName(programName);
-    };
-
 
     return (
         <div className=' flex flex-col max-h-screen h-screen gap-3 p-3'>
