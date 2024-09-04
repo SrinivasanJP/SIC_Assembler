@@ -60,7 +60,10 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,s
             locctr += parseInt(operand);
         } else if (opcode === "END") {
             return;
-        } else {
+        }else if(opcode === "BASE"){
+            return;
+        }else {
+            console.log("Error"+opcode)
             setError({state:true,message:`Error: Invalid opcode ${opcode} at line ${index + 1}`});
         }
 
