@@ -1,6 +1,6 @@
 import { OPTAB } from "./constants";
 
-export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,setError) => {
+export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,setError,setPass1Done) => {
     setError({state:false,message:""})
     let lines = code.split('\n');
     let locctr = 0;
@@ -78,6 +78,7 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,s
     setSymtab(JSON.stringify(symtab, null, 2));
     setProgramName(programName);
     console.log(`Program length: ${programLength.toString(16).toUpperCase()}H`);
+    setPass1Done(true);
 };
 
 // Example helper functions

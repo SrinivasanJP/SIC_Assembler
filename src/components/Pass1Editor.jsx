@@ -5,6 +5,7 @@ import {processPass1} from '../helpers/pass1Helper'
 import IntermediateTable from './IntermediateTable';
 const Pass1Editor = () => {
     const [code, setCode] = useState('COPY START 1000\n');
+    const [isPass1Done, setPass1Done] = useState(false);
     const [intermediateFile, setIntermediateFile] = useState('');
     const [symtab, setSymtab] = useState('');
     const [programName, setProgramName] = useState('');
@@ -48,8 +49,8 @@ const Pass1Editor = () => {
                 </div>
             </div>
         </div>
-        <div onClick={()=>processPass1(code,setProgramName,setSymtab,setIntermediateFile,setError)} className={"w-full rounded-lg flex justify-center mt-5 "+common.Buttonblue}>
-        <h1 className='text-xl font-bold '>Click here to get Output</h1>
+        <div onClick={()=>processPass1(code,setProgramName,setSymtab,setIntermediateFile,setError,setPass1Done)} className={"w-full rounded-lg flex justify-center mt-5  "+common.Buttonblue}>
+        <h1 className='text-xl font-bold '>{`Click here to get PASS ${isPass1Done?2:1} Output`}</h1>
         </div>
         </div>
         
