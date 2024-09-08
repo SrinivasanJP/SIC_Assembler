@@ -3,6 +3,8 @@ import Editor from '@monaco-editor/react';
 import { common } from '../styles/common';
 import {processPass1} from '../helpers/pass1Helper'
 import IntermediateTable from './IntermediateTable';
+import { processPass2 } from '../helpers/pass2Helper';
+import { OPTAB } from '../helpers/constants';
 const Pass1Editor = () => {
     const [code, setCode] = useState('COPY START 1000\n');
     const [isPass1Done, setPass1Done] = useState(false);
@@ -11,11 +13,20 @@ const Pass1Editor = () => {
     const [programName, setProgramName] = useState('');
     const [locctr, setLocctr] = useState(0);
     const [error, setError] = useState({state:false, message:""});
+    const [objCode, setObjCode] = useState();
 
     const handleEditorChange = (value) => {
         setCode(value);
     };
 
+    const handlePass2 = ()=>{
+        processPass2(intermediateFile,symtab,OPTAB,setObjCode,setError)
+        console.log(objCode)
+    }
+    const handleButtonPress = ()=>{
+        if(isPass1Done){handlePass2()}
+        else {processPass1(code,setProgramName,setSymtab,setIntermediateFile,setError,setPass1Done)}
+    }
 
     return (
         <div className=' flex flex-col max-h-screen h-screen gap-3 p-3'>
@@ -49,7 +60,7 @@ const Pass1Editor = () => {
                 </div>
             </div>
         </div>
-        <div onClick={()=>processPass1(code,setProgramName,setSymtab,setIntermediateFile,setError,setPass1Done)} className={"w-full rounded-lg flex justify-center mt-5  "+common.Buttonblue}>
+        <div onClick={()=>handleButtonPress()} className={"w-full rounded-lg flex justify-center mt-5  "+common.Buttonblue}>
         <h1 className='text-xl font-bold '>{`Click here to get PASS ${isPass1Done?2:1} Output`}</h1>
         </div>
         </div>
