@@ -1,7 +1,8 @@
 import React from 'react'
 import ToolCard from './ToolCard'
 import pass1Img from"../assets/pass1.webp"
-
+import abLoader from "../assets/assembler.jpeg"
+import linker from '../assets/linker.jpeg'
 const Home = ({setPage}) => {
   const tools = [{
     toolName:"SIC and SIC\XE Pass 1 and Pass 2",
@@ -10,18 +11,20 @@ const Home = ({setPage}) => {
     img:pass1Img
   },
   {
+    toolName:"Absolute Loader",
+    isUnderDev:false,
+    pageName:"absoluteLoader",
+    img:abLoader
+  },{
+    toolName:"Direct Linker",
+    isUnderDev:false,
+    pageName:"directLinker",
+    img:linker
+  },{
     toolName:"SIC Playground",
     isUnderDev:true,
     pageName:""
-  },{
-    toolName:"Absolute Loader",
-    isUnderDev:true,
-    pageName:"absoluteLoader"
-  },{
-    toolName:"Direct Linker",
-    isUnderDev:true,
-    pageName:"directLinker"
-  }
+  },
 ]
   return (
     <div className='flex justify-center items-center flex-wrap gap-10 mt-10'>
