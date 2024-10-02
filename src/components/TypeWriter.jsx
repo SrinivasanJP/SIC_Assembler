@@ -24,10 +24,15 @@ function TypeWriter({ data }) {
     return () => clearTimeout(timeoutId);
   }, [data]);
 
-  const renderWithNewlines = (text) => {
+  const renderWithNewlinesAndTabs = (text) => {
     return text.split('\n').map((line, index) => (
       <React.Fragment key={index}>
-        {line}
+        {line.split('\t').map((part, tabIndex) => (
+          <React.Fragment key={tabIndex}>
+            {part}
+            {tabIndex < line.split('\t').length - 1 && <span style={{ display: 'inline-block', width: '2ch' }}></span>} {/* Add space for tab */}
+          </React.Fragment>
+        ))}
         <br />
       </React.Fragment>
     ));
@@ -36,7 +41,7 @@ function TypeWriter({ data }) {
   return (
     <div>
       <h1 className='w-[80%] text-md font-bold inline-block font-SpaceMono lg:leading-loose'>
-        {renderWithNewlines(currentWord)}
+        {renderWithNewlinesAndTabs(currentWord)}
         <span className='inline-block ml-2 animate-blink md:h-8 h-5 w-[2px] '></span>
       </h1>
     </div>
