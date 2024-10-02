@@ -13,12 +13,20 @@ const Home = ({setPage}) => {
     toolName:"SIC Playground",
     isUnderDev:true,
     pageName:""
+  },{
+    toolName:"Absolute Loader",
+    isUnderDev:true,
+    pageName:"absoluteLoader"
+  },{
+    toolName:"Direct Linker",
+    isUnderDev:true,
+    pageName:"directLinker"
   }
 ]
   return (
     <div className='flex justify-center items-center flex-wrap gap-10 mt-10'>
       {
-        tools.map((data, index)=><ToolCard toolName={data.toolName} setPage={()=>setPage(data.pageName)} pass1Img={data.img && data.img} isUnderDev={data.isUnderDev}/>)}
+        tools.map((data, index)=><ToolCard toolName={data.toolName} setPage={()=>setPage(data.pageName)} pass1Img={data.img && data.img} isUnderDev={data.isUnderDev} key={index}/>)}
     </div>
   )
 }

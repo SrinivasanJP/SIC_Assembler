@@ -3,6 +3,8 @@ import Home from './components/Home';
 import Pass1Editor from './components/Pass1Editor';
 import { common } from './styles/common';
 import { IoMdArrowRoundBack } from "react-icons/io";
+import AbsoluteLoader from './components/AbsoluteLoader';
+import DirectLinker from './components/DirectLinker';
 
 const App = () => {
   const [page, setPage] = useState("home");
@@ -10,9 +12,14 @@ const App = () => {
     switch (page) {
       case "home":
         return <Home setPage={setPage}/>
-      case "Pass1Editor":
-        return <Pass1Editor setPage={setPage}/>
-      default:
+        case "Pass1Editor":
+          return <Pass1Editor setPage={setPage}/>
+        case "absoluteLoader":
+          return <AbsoluteLoader setPage={setPage}/>
+        case "directLinker":
+          return <DirectLinker setPage={setPage}/>
+                
+        default:
         return <Home setPage={setPage}/>
     }
   }
