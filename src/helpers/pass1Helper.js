@@ -1,6 +1,6 @@
 import { OPTAB } from "./constants";
 
-export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,setError) => {
+export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,setError,setProgramLen) => {
     setError({state:false,message:""})
     let lines = code.split('\n');
     let locctr = 0;
@@ -40,10 +40,7 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,s
             } else {
                 symtab[label] = locctr.toString(16).toUpperCase();
             }
-        }
-
-        console.log(opcode+"---"+locctr);
-        
+        } 
 
         intermediateLines.push(`${locctr.toString(16).toUpperCase().padStart(4,"0")} \t ${label} \t ${opcode} \t ${operand}`);
         // Handle opcodes and directives
@@ -78,6 +75,7 @@ export const processPass1 = (code,setProgramName,setSymtab,setIntermediateFile,s
     setSymtab(JSON.stringify(symtab, null, 2));
     setProgramName(programName);
     console.log(`Program length: ${programLength.toString(16).toUpperCase()}H`);
+    setProgramLen(programLength.toString(16).toUpperCase())
 };
 
 // Example helper functions
