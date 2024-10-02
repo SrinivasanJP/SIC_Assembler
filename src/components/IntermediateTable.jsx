@@ -22,7 +22,7 @@ const IntermediateTable = ({ intermediateFile,error }) => {
                         <th className="p-2">LABEL</th>
                         <th className="p-2">OPCODE</th>
                         <th className=" p-2">OPERAND</th>
-                        <th className='p-2'>ObJ_CODE</th>
+                        <th className='p-2'>OBJ_CODE</th>
                     </tr>
                 </thead>
                 <tbody>
