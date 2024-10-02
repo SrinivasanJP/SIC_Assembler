@@ -1,107 +1,103 @@
-export const processPass2 = (intermediateLines, symtab, OPTAB, setObjectCode, setError) => {
-    let pc = 0;
-    let base = 0;
-    let objectCodeLines = [];
+import { OPTAB } from "./constants";
 
-    intermediateLines.split('\n').forEach((line, index) => {
-        let [locctr, label, opcode, operand] = line.trim().split(/\s+/);
-        let objectCode = '';
-        
-        // Convert locctr to integer
-        locctr = parseInt(locctr, 16);
-        
-        // Handle opcodes
-        if (opcode in OPTAB || opcode.includes("+")) {
-            let format = determineFormat(opcode);  // Determine instruction format
-            let opcodeBinary = OPTAB[opcode.replace("+", "")];  // Remove "+" for format 4
+export const processPass2 = (intermediateFile, symtab, setObjCode, setError, setIntermediateFile, programLen) => {
+    setError({ state: false, message: "" });
 
-            if (format === 4) {
-                // Format 4
-                objectCode = handleFormat4(opcodeBinary, operand, symtab);
-            } else if (format === 3) {
-                // Format 3 with PC-relative or base-relative addressing
-                objectCode = handleFormat3(opcodeBinary, operand, symtab, locctr, base, pc);
-            }
-        } else if (opcode === "BYTE" || opcode === "WORD") {
-            objectCode = handleDataDirective(opcode, operand);
+    let objCode = [];
+    let startAddress = 0;
+    let currentAddress = 0;
+    let textRecord = '';
+    let textRecordStartAddr = ''; 
+    let intermediateLines = [];
+    let sym = JSON.parse(symtab);
+
+    console.log(intermediateFile);
+    intermediateFile.split('\n').forEach(line => {
+        const list = line.trim().split(/\s+/);
+        let loc = '', label = '', opcode = '', operand = '';
+
+        if (list.length === 4) {
+            [loc, label, opcode, operand] = list;
+        } else if (list.length === 3) {
+            [loc, opcode, operand] = list;
         }
 
-        // Add the object code to the intermediate line
-        objectCodeLines.push(`${line}\t${objectCode}`);
+        // Skip if no opcode
+        if (!opcode) return;
 
-        // Update PC for next instruction
-        pc = locctr + determineFormat(opcode);  // Assuming format is 3 or 4
+        // Handle the START directive
+        if (opcode === "START") {
+            startAddress = parseInt(loc, 16);
+            currentAddress = startAddress;
+            textRecordStartAddr = startAddress; // Initialize the start address for the first text record
+            intermediateLines.push(`${loc} \t ${label} \t ${opcode} \t ${operand}`);
+            objCode.push(`H ${label} ${operand.padStart(6, '0')} ${programLen.padStart(6, '0')}`);
+            return;
+        }
 
-        // Handle BASE directive to set the base register value
-        if (opcode === "BASE") {
-            base = parseInt(symtab[operand], 16);
+        // Generate object code for OPCODEs
+        if (opcode in OPTAB) {
+            const objOpcode = OPTAB[opcode];
+            const operandAddress = sym[operand] || '0000';
+            const objectInstruction = objOpcode + operandAddress;
+            intermediateLines.push(`${loc} \t ${label} \t ${opcode} \t ${operand} \t ${objectInstruction}`);
+
+            // Add the object instruction to the text record
+            if (!textRecordStartAddr) {
+                textRecordStartAddr = loc; // Set start address of the text record
+            }
+
+            // If adding this object instruction exceeds 60 characters, flush the current text record
+            if (textRecord.length + objectInstruction.length > 60) {
+                objCode.push(`T ${String(textRecordStartAddr).padStart(6, '0')} ${(textRecord.length / 2).toString(16).padStart(2, '0')} ${textRecord}`);
+
+                textRecord = objectInstruction; // Start a new text record
+                textRecordStartAddr = loc; // Set the new text record's start address
+            } else {
+                textRecord += objectInstruction; // Add to existing text record
+            }
+            currentAddress += 3;
+        } else if (opcode === "RESW" || opcode === "RESB" || opcode === "WORD" || opcode === "BYTE") {
+            // Flush the current text record since no object code is generated for RESW/RESB
+            if (textRecord.length > 0) {
+                objCode.push(`T ${String(textRecordStartAddr).padStart(6, '0')} ${(textRecord.length / 2).toString(16).padStart(2, '0')} ${textRecord}`);
+
+                textRecord = '';
+                textRecordStartAddr = ''; // Reset the start address for the next text record
+            }
+            intermediateLines.push(`${loc} \t ${label} \t ${opcode} \t ${operand}`);
+            if (opcode === "RESW") {
+                currentAddress += parseInt(operand) * 3;
+            } else {
+                currentAddress += parseInt(operand);
+            }
+        } else if (opcode === "END") {
+            // Flush any remaining text record before ending
+            if (textRecord.length > 0) {
+                objCode.push(`T ${String(textRecordStartAddr).padStart(6, '0')} ${(textRecord.length / 2).toString(16).padStart(2, '0')} ${textRecord}`);
+
+            }
+            intermediateLines.push(`${loc} \t ${label} \t ${opcode} \t ${operand}`);
+            objCode.push(`E ${startAddress.toString(16).padStart(6, '0')}`);
+            return; // Exit loop
+        } else {
+            console.error(`Error: Invalid opcode ${opcode}`);
+            setError({ state: true, message: `Error: Invalid opcode ${opcode}` });
+            return;
         }
     });
 
-    setObjectCode(objectCodeLines.join('\n'));
+    // Store the intermediate lines and object code
+    setIntermediateFile(intermediateLines.join("\n"));
+    setObjCode(objCode.join('\n'));
 };
 
-// Function to handle Format 4 (extended format) instructions
-const handleFormat4 = (opcodeBinary, operand, symtab) => {
-    let targetAddress = symtab[operand] ? parseInt(symtab[operand], 16) : parseInt(operand, 16);
-    let niBits = "11";  // Assume simple addressing (neither immediate nor indirect)
-    let xbpeBits = "0001";  // Set the extended bit for format 4
-
-    let opcodeHex = parseInt(opcodeBinary, 16).toString(2).padStart(8, "0").slice(0, 6);
-    let fullOpcode = parseInt(opcodeHex + niBits, 2).toString(16).toUpperCase();
-
-    return fullOpcode.padStart(2, "0") + xbpeBits + targetAddress.toString(16).padStart(5, "0").toUpperCase();
-};
-
-// Function to handle Format 3 instructions with PC-relative and base-relative addressing
-const handleFormat3 = (opcodeBinary, operand, symtab, locctr, base, pc) => {
-    let niBits = "11";  // Assume simple addressing (neither immediate nor indirect)
-    let xbpeBits = "0000";  // By default, no extended, base, or PC-relative
-    let displacement = 0;
-
-    let targetAddress = symtab[operand] ? parseInt(symtab[operand], 16) : parseInt(operand, 16);
-
-    // PC-relative addressing
-    displacement = targetAddress - (pc + 3);
-    if (displacement >= -2048 && displacement <= 2047) {
-        xbpeBits = "0010";  // Set the PC-relative bit
-    } else {
-        // If PC-relative addressing is not possible, try base-relative
-        displacement = targetAddress - base;
-        if (displacement >= 0 && displacement <= 4095) {
-            xbpeBits = "0100";  // Set the base-relative bit
-        } else {
-            console.error(`Error: Displacement out of range for operand ${operand}`);
-            // setError({state:true,message:`Error: Displacement out of range for operand ${operand} at line ${index + 1}`});
-            return '';
-        }
+// Helper function to calculate the object code for BYTE directives
+const calculateByteObjectCode = (operand) => {
+    if (operand.startsWith('C')) {
+        return operand.slice(2, -1).split('').map(c => c.charCodeAt(0).toString(16).toUpperCase()).join('');
+    } else if (operand.startsWith('X')) {
+        return operand.slice(2, -1); // Extract the hex value directly
     }
-
-    let opcodeHex = parseInt(opcodeBinary, 16).toString(2).padStart(8, "0").slice(0, 6);
-    let fullOpcode = parseInt(opcodeHex + niBits, 2).toString(16).toUpperCase();
-
-    return fullOpcode.padStart(2, "0") + xbpeBits + displacement.toString(16).padStart(3, "0").toUpperCase();
-};
-
-// Function to handle BYTE and WORD directives
-const handleDataDirective = (opcode, operand) => {
-    let objectCode = '';
-
-    if (opcode === "WORD") {
-        objectCode = parseInt(operand).toString(16).padStart(6, "0").toUpperCase();
-    } else if (opcode === "BYTE") {
-        if (operand.startsWith("C'")) {
-            objectCode = operand.slice(2, -1).split('').map(c => c.charCodeAt(0).toString(16)).join('').toUpperCase();
-        } else if (operand.startsWith("X'")) {
-            objectCode = operand.slice(2, -1).toUpperCase();
-        }
-    }
-
-    return objectCode;
-};
-
-// Example helper function to determine the format of an opcode
-const determineFormat = (opcode) => {
-    if (opcode.startsWith("+")) return 4;  // Format 4
-    return 3;  // Assume format 3 for all other opcodes
+    return ''; // Fallback case if operand is not C'' or X''
 };

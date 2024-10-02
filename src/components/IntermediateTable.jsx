@@ -11,7 +11,7 @@ const IntermediateTable = ({ intermediateFile,error }) => {
     });
 
     return (
-        <div className={error.state?' bg-red-500/20 backdrop-blur-lg shadow-sm shadow-red-600 flex-1 rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]':" bg-transparent backdrop-blur-lg shadow-sm shadow-white flex-1 rounded-lg p-3 overflow-auto max-h-[100em] min-h-[20em]"}>
+        <div className={error.state?' bg-red-500/20 backdrop-blur-lg shadow-sm shadow-red-600 flex-1 rounded-lg p-3 overflow-auto':" bg-transparent backdrop-blur-lg shadow-sm shadow-white rounded-lg p-3 overflow-auto"}>
             
             <h1>Intermediate File:</h1>
             {error.state?<div className='w-full flex justify-center items-center h-[80%]'>{error.message}</div>:
@@ -22,6 +22,7 @@ const IntermediateTable = ({ intermediateFile,error }) => {
                         <th className="p-2">LABEL</th>
                         <th className="p-2">OPCODE</th>
                         <th className=" p-2">OPERAND</th>
+                        <th className='p-2'>ObjCode</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,7 @@ const IntermediateTable = ({ intermediateFile,error }) => {
                             <td className="border border-gray-400 p-2">{row[1]}</td>
                             <td className="border border-gray-400 p-2">{row[2]}</td>
                             <td className="border border-gray-400 p-2">{row[3]}</td>
+                           {row[4] && <td className="border border-gray-400 p-2">{row[4]}</td>}
                         </tr>
                     ))}
                 </tbody>
